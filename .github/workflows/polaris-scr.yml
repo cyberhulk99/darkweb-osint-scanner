@@ -21,14 +21,14 @@ jobs:
     uses: cyberhulk99/polaris-workflows/.github/workflows/polaris-scr.yml@main
     with:
       app_key: darkweb-osint-scanner
-      polaris_url: http://localhost:8092
+      polaris_url: https://3fe2-106-51-85-191.ngrok-free.app
       rules_repo: cyberhulk99/polaris-workflows
 
   sca:
     uses: cyberhulk99/polaris-workflows/.github/workflows/polaris-sca.yml@main
     with:
       app_key: darkweb-osint-scanner
-      polaris_url: http://localhost:8092
+      polaris_url: https://3fe2-106-51-85-191.ngrok-free.app
       rules_repo: cyberhulk99/polaris-workflows
 
   # SBOM is "what's in the repo right now" — only meaningful on push, not a
@@ -39,11 +39,11 @@ jobs:
     uses: cyberhulk99/polaris-workflows/.github/workflows/polaris-sbom.yml@main
     with:
       app_key: darkweb-osint-scanner
-      polaris_url: http://localhost:8092
+      polaris_url: https://3fe2-106-51-85-191.ngrok-free.app
 
   cbom:
     uses: cyberhulk99/polaris-workflows/.github/workflows/polaris-cbom.yml@main
     with:
       app_key: darkweb-osint-scanner
-      polaris_url: http://localhost:8092
+      polaris_url: https://3fe2-106-51-85-191.ngrok-free.app
       rules_repo: cyberhulk99/polaris-workflows
