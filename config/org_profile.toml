@@ -25,3 +25,24 @@ max_results_per_query = 10      # pages to fetch per search query (keep low to r
 [alerts]
 # Set SLACK_WEBHOOK_URL environment variable instead of putting it here
 slack_webhook = ""
+
+# ── Optional API integrations ──────────────────────────────────────────────
+# These dramatically improve coverage. Set as environment variables — never
+# put API keys in this file (it may be committed to git).
+#
+# HIBP_API_KEY      HaveIBeenPwned domain search (paid plan required)
+#                   Get key: https://haveibeenpwned.com/API/Key
+#                   export HIBP_API_KEY="your-key-here"
+#
+# GITHUB_TOKEN      GitHub classic PAT (free — no special scopes needed)
+#                   Create at: https://github.com/settings/tokens
+#                   export GITHUB_TOKEN="ghp_your_token_here"
+#
+# SLACK_WEBHOOK_URL Slack incoming webhook for real-time alerts
+#                   export SLACK_WEBHOOK_URL="https://hooks.slack.com/..."
+
+[telegram]
+# Public Telegram channels to monitor beyond the built-in list.
+# These are checked for org keyword mentions — no API key needed.
+# Add known threat actor channels or industry-specific breach channels.
+extra_channels = []   # e.g. ["channel_name_without_@"]
