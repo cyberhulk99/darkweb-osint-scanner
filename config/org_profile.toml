@@ -1,0 +1,27 @@
+# ─────────────────────────────────────────────────────────────
+#  WODS — Organisation Profile
+#  Fill in your org details. This drives everything WODS hunts for.
+# ─────────────────────────────────────────────────────────────
+
+[organization]
+name          = ""                  # e.g. "Acme Corp"
+domains       = []                  # e.g. ["acmecorp.com", "acme.io"]
+email_domain  = ""                  # e.g. "acmecorp.com"  (primary email domain)
+subsidiaries  = []                  # e.g. ["Acme Labs", "Acme Payments"]
+executives    = []                  # e.g. ["John Smith CEO"]  — optional, adds name-based keywords
+keywords_extra = []                 # any extra terms to monitor
+
+[infrastructure]
+# Optional — add these to catch infra-specific leaks
+ip_ranges      = []   # e.g. ["203.0.113.0/24"]   — your public IP space
+internal_names = []   # e.g. ["jira", "confluence", "vpn.acme", "okta.acme"]
+cloud_buckets  = []   # e.g. ["acme-prod-backups", "acme-db-snapshots"]
+
+[monitoring]
+interval_hours        = 6       # how often to run in continuous mode
+min_severity          = "medium"  # minimum to alert: low / medium / high / critical
+max_results_per_query = 10      # pages to fetch per search query (keep low to respect rate limits)
+
+[alerts]
+# Set SLACK_WEBHOOK_URL environment variable instead of putting it here
+slack_webhook = ""

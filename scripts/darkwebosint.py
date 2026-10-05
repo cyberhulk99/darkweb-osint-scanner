@@ -4,33 +4,54 @@ import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-from utils import print_banner
-from tor_control import start_tor_service
-
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="WODS - World of Dark Side OSINT Scanner")
-    parser.add_argument("-org", "--organization", help="Organization name to monitor")
-    parser.add_argument(
-        "--continuous",
-        action="store_true",
-        help="Run in continuous monitoring mode (loops forever)",
+    parser = argparse.ArgumentParser(
+        description="WODS — Dark Web OSINT Monitor",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""
+Examples:
+  # One-shot scan using org_profile.toml
+  python3 darkwebosint.py
+
+  # Continuous monitoring (interval from profile, default 6h)
+  python3 darkwebosint.py --continuous
+
+  # Override org name and interval
+  python3 darkwebosint.py -org "Acme Corp" --continuous --interval 2
+
+  # Use a custom profile file
+  python3 darkwebosint.py --profile /path/to/my_profile.toml --continuous
+        """,
     )
-    parser.add_argument(
-        "--interval",
-        type=float,
-        default=6.0,
-        metavar="HOURS",
-        help="Hours between monitoring cycles in continuous mode (default: 6)",
-    )
+    parser.add_argument("-org", "--organization",
+                        help="Override organization name from profile")
+    parser.add_argument("--profile",
+                        help="Path to org_profile.toml (default: config/org_profile.toml)")
+    parser.add_argument("--continuous", action="store_true",
+                        help="Run continuously on a schedule")
+    parser.add_argument("--interval", type=float, metavar="HOURS",
+                        help="Override monitoring interval in hours")
     args = parser.parse_args()
 
-    org = (args.organization or input("🔍 Enter your organization name for OSINT: ")).strip()
+    from monitor import load_profile, run_cycle, run_continuous
+    from utils import print_banner
+    from tor_control import start_tor_service
+
+    config = load_profile(args.profile) if args.profile else load_profile()
+
+    if args.organization:
+        config.setdefault("organization", {})["name"] = args.organization
+
+    if not config.get("organization", {}).get("name"):
+        name = input("🔍 Enter your organisation name: ").strip()
+        config.setdefault("organization", {})["name"] = name
+
+    if args.interval:
+        config.setdefault("monitoring", {})["interval_hours"] = args.interval
 
     if args.continuous:
-        from monitor import run_continuous
-        run_continuous(org, interval_hours=args.interval)
+        run_continuous(config=config)
     else:
         print_banner()
         start_tor_service()
-        from monitor import run_cycle
-        run_cycle(org)
+        run_cycle(config)
