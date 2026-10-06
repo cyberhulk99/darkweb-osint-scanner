@@ -1,0 +1,18 @@
+# ─────────────────────────────────────────────────────────────
+#  Ransomware / Extortion Group Leak Site .onion Addresses
+#
+#  These groups publicly post their victims on dark web blogs.
+#  Monitoring them is standard enterprise threat intel practice.
+#
+#  HOW TO POPULATE THIS FILE:
+#  Update regularly from these public threat intel trackers:
+#    → https://www.ransomlook.io/        (community-maintained list)
+#    → https://ransomwatch.telemetry.ltd (open-source tracker)
+#    → CISA and FBI joint advisories      (official .gov sources)
+#
+#  Format: one .onion URL per line
+#          lines starting with # are ignored
+#
+#  Example (addresses change — always verify from above sources):
+#  http://example.onion
+# ─────────────────────────────────────────────────────────────

@@ -1,61 +1,60 @@
 import os
-from rich.console import Console
-from rich.text import Text
 from datetime import datetime
-import argparse
 
-tool_entry_points = {
-    "Katana": "kds.py",
-    "OnionSearch": "main.py",
-    "darkdump": "darkdump.py",
-    "ahmia-site": None,
-    "Darkus": None,
-    "Onioff": "onioff.py",
-    "docker-onion-nmap": None,
-    "TorBot": "main.py",
-    "TorCrawl.py": None,
-    "VigilantOnion": None,
-    "OnionIngestor": None,
-    "Darc": None,
-    "midnight_sea": None,
-    "pryingdeep": None,
-    "deepdarkCTI": None
-}
+_BASE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-def print_banner():
+try:
+    from rich.console import Console
+    from rich.text import Text
+    _RICH = True
+except ImportError:
+    _RICH = False
+
+# Single log file per session, created on first write
+_SESSION_LOG = None
+
+
+def _session_log_path() -> str:
+    global _SESSION_LOG
+    if _SESSION_LOG is None:
+        log_dir = os.path.join(_BASE, "logs")
+        os.makedirs(log_dir, exist_ok=True)
+        ts = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+        _SESSION_LOG = os.path.join(log_dir, f"session_{ts}.log")
+    return _SESSION_LOG
+
+
+def write_log(message: str) -> None:
+    with open(_session_log_path(), "a") as f:
+        f.write(f"{datetime.now().isoformat()} — {message}\n")
+
+
+def print_banner() -> None:
     os.system("clear")
-    console = Console()
-    banner = Text()
-    banner.append("\n#########################################\n", style="bold white")
-    banner.append("██     ██  ██████  ██████   ██████  ███████\n", style="bold red")
-    banner.append("██     ██ ██    ██ ██   ██ ██    ██ ██     \n", style="bold yellow")
-    banner.append("██  █  ██ ██    ██ ██   ██ ██    ██ █████  \n", style="bold green")
-    banner.append("██ ███ ██ ██    ██ ██   ██ ██    ██ ██     \n", style="bold cyan")
-    banner.append(" ███ ███   ██████  ██████   ██████  ███████\n", style="bold magenta")
-    banner.append("#########################################\n", style="bold white")
-    banner.append("          Welcome to the World of Dark Side (WODS)\n", style="bold blue")
-    banner.append("          Author: @Sumandas\n", style="bold white")
-    console.print(banner)
+    if _RICH:
+        console = Console()
+        banner = Text()
+        banner.append("\n#########################################\n", style="bold white")
+        banner.append("██     ██  ██████  ██████   ██████  ███████\n", style="bold red")
+        banner.append("██     ██ ██    ██ ██   ██ ██    ██ ██     \n", style="bold yellow")
+        banner.append("██  █  ██ ██    ██ ██   ██ ██    ██ █████  \n", style="bold green")
+        banner.append("██ ███ ██ ██    ██ ██   ██ ██    ██ ██     \n", style="bold cyan")
+        banner.append(" ███ ███   ██████  ██████   ██████  ███████\n", style="bold magenta")
+        banner.append("#########################################\n", style="bold white")
+        banner.append("    WODS — World of Dark Side\n", style="bold blue")
+        banner.append("    Dark Web OSINT Monitor\n", style="bold white")
+        console.print(banner)
+    else:
+        print("\n" + "=" * 50)
+        print("  WODS — Dark Web OSINT Monitor")
+        print("=" * 50 + "\n")
 
-def list_available_tools():
-    return [tool for tool in tool_entry_points]
 
-def write_log(message):
-    os.makedirs("logs", exist_ok=True)
-    timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-    with open(f"logs/log_{timestamp}.txt", "a") as f:
-        f.write(f"{datetime.now()} - {message}\n")
-
-def generate_keywords(org_name):
-    base_keywords = [
-        "credentials", "confidential", "vpn", "admin panel", "email",
-        "database", "db dump", "internal login", "source code",
-        "employee data", "leaked creds", "ssh key", "jwt", "jira",
-        "slack", "github", "zendesk", "production.db", "tokens"
+def generate_keywords(org_name: str) -> list:
+    """Generate search keyword variants from an org name."""
+    suffixes = [
+        "credentials", "db dump", "leaked creds", "breach",
+        "employee data", "source code", "vpn", "ssh key",
+        "api key", "internal", "confidential",
     ]
-    return [f"{org_name} {kw}" for kw in base_keywords]
-
-def update_keywords_file(org_keywords):
-    with open("config/keywords.txt", "w") as f:
-        for keyword in org_keywords:
-            f.write(f"{keyword}\n")
+    return [f"{org_name} {s}" for s in suffixes]

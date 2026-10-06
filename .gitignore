@@ -1,0 +1,31 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+dist/
+build/
+.eggs/
+*.egg
+venv/
+.venv/
+env/
+
+# Runtime output — generated at runtime, not source-controlled
+data/findings.db
+data/alerts.log
+logs/
+
+# Secrets — never commit
+.env
+*.key
+*.pem
+
+# OS / editor
+.DS_Store
+*.swp
+*.swo
+.idea/
+.vscode/
