@@ -455,16 +455,15 @@ def scan_ransomwatch(keywords: list[str]) -> list[dict]:
         r.raise_for_status()
         posts = r.json()  # [{group_name, post_title, discovered, ...}, ...]
         for post in posts:
-            title   = str(post.get("post_title", "")).lower()
-            group   = str(post.get("group_name", ""))
-            country = str(post.get("country", ""))
+            title = str(post.get("post_title", "")).lower()
+            group = str(post.get("group_name", "unknown group"))
+            date  = str(post.get("discovered", "unknown date"))
             if any(kw.lower() in title for kw in keywords):
                 hits.append({
-                    "url": f"https://github.com/joshhighet/ransomwatch",
+                    "url": "https://github.com/joshhighet/ransomwatch",
                     "content": (
-                        f"RansomWatch victim match: '{post.get('post_title')}' "
-                        f"listed by {group} on {post.get('discovered', 'unknown date')}. "
-                        f"Country: {country}."
+                        f"RansomWatch victim listing: '{post.get('post_title')}' "
+                        f"posted by ransomware group '{group}' on {date}."
                     ),
                     "source": "ransomwatch",
                     "pre_severity": "critical",

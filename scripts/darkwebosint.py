@@ -13,6 +13,9 @@ Examples:
   # One-shot scan using org_profile.toml
   python3 darkwebosint.py
 
+  # Quick setup check (no scanning)
+  python3 darkwebosint.py --check
+
   # Continuous monitoring (interval from profile, default 6h)
   python3 darkwebosint.py --continuous
 
@@ -31,9 +34,11 @@ Examples:
                         help="Run continuously on a schedule")
     parser.add_argument("--interval", type=float, metavar="HOURS",
                         help="Override monitoring interval in hours")
+    parser.add_argument("--check", action="store_true",
+                        help="Verify setup (Tor, config, API keys) without scanning")
     args = parser.parse_args()
 
-    from monitor import load_profile, run_cycle, run_continuous
+    from monitor import load_profile, run_cycle, run_continuous, check_setup
     from utils import print_banner
     from tor_control import start_tor_service
 
@@ -42,8 +47,13 @@ Examples:
     if args.organization:
         config.setdefault("organization", {})["name"] = args.organization
 
+    if args.check:
+        print_banner()
+        check_setup(config)
+        sys.exit(0)
+
     if not config.get("organization", {}).get("name"):
-        name = input("🔍 Enter your organisation name: ").strip()
+        name = input("Enter your organisation name: ").strip()
         config.setdefault("organization", {})["name"] = name
 
     if args.interval:

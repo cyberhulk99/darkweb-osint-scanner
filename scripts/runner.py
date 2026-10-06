@@ -1,6 +1,10 @@
 import os
 import subprocess
-from utils import tool_entry_points, write_log
+from utils import write_log
+
+# Legacy tool runner — external tools (Katana, TorBot, etc.) are no longer used.
+# Kept for reference; main pipeline is in monitor.py.
+tool_entry_points: dict = {}
 
 _BASE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 TOOLS_DIR = os.path.join(_BASE, "tools")
